@@ -1,3 +1,4 @@
+// import pg from "pg-promise";
 const pg = require('pg-promise')();
 
 const cn = {
@@ -9,21 +10,76 @@ const cn = {
 };
 var db = pg(cn);
 
-var allinfo = db.any("SELECT * from statistical")
-.then(function (data) {
-    console.log("Temperature:", data);
-})
-.catch(function (error) {
-    console.log("ERROR:", error);
-});
-
-function addinfo(values)
+ 
+export function allinfo(mac)
 {
-    var sql = "INSERT INTO customers (mac,temp,press,hum,gas,date) VALUES ?";
-    con.query(sql, [values], function (err, result) {
-        if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
-      });
+    return db.any("SELECT temp,press,hum,gas from statistical where mac=$1 and date = (SELECT max(date) from statistical)",mac)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
 }
 
-module.exports= {allinfo, addinfo};
+export function addinfo(values)
+{
+    console.log(values);
+      db.none('INSERT INTO statistical (mac,temp,press,hum,gas,date) VALUES(${mac},${temp},${press},${hum},${gas},${date})', values)
+}
+
+export function infotemp(values /*mac,datenow,hours*/)
+{
+    return db.any("SELECT temp from statistical where mac=${mac}} and (date >= ${datenow}} - interval '${hours}} hours')",values/*[mac,datenow,hours]*/)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
+}
+
+export function infopress(values /*mac,datenow,hours*/)
+{
+    return db.any("SELECT pess from statistical where mac=${mac}} and (date >= ${datenow}} - interval '${hours}} hours')",values/*[mac,datenow,hours]*/)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
+}
+
+export function infohum(values /*mac,datenow,hours*/)
+{
+    return db.any("SELECT hum from statistical where mac=${mac}} and (date >= ${datenow}} - interval '${hours}} hours')",values/*[mac,datenow,hours]*/)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
+}
+
+export function infogas(values /*mac,datenow,hours*/)
+{
+    return db.any("SELECT gas from statistical where mac=${mac}} and (date >= ${datenow}} - interval '${hours}} hours')",values/*[mac,datenow,hours]*/)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
+}
+
+export function macuser(values/*login,password*/)
+{
+    return db.any("SELECT mac from users where (login=${login} and password=${password})",values/*[login,password]*/)
+    .then(function (data) {
+        return data;
+    })
+    .catch(function (error) {
+        console.log("ERROR:", error);
+    });
+}
+// module.exports= {allinfo, addinfo};
