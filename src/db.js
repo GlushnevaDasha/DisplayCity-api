@@ -11,9 +11,9 @@ const cn = {
 var db = pg(cn);
 
  
-export function allinfo(mac)
+export function allinfo(values)
 {
-    return db.any("SELECT temp,press,hum,gas from statistical where mac=$1 and date = (SELECT max(date) from statistical)",mac)
+    return db.any("SELECT temp,press,hum,gas from statistical where mac=${mac}} and date = (SELECT max(date) from statistical)",values)
     .then(function (data) {
         return data;
     })
@@ -25,7 +25,7 @@ export function allinfo(mac)
 export function addinfo(values)
 {
     console.log(values);
-      db.none('INSERT INTO statistical (mac,temp,press,hum,gas,date) VALUES(${mac},${temp},${press},${hum},${gas},${date})', values)
+    db.none('INSERT INTO statistical (mac,temp,press,hum,gas,date) VALUES(${mac},${temp},${press},${hum},${gas},${date})', values)
 }
 
 export function infotemp(values /*mac,datenow,hours*/)

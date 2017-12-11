@@ -8,16 +8,21 @@ const app = express();
 
   app.use(bodyParser.json());
 
-  app.get('/allinfo', function (req, res) { // Выдача всех данных на начало
-    console.log('get temp');
-    db.allinfo('hbhbb'/*mac*/).then(t => {
+  app.post('/allinfo', function (req, res) { // Выдача всех данных на начало
+    const value = {
+      mac: rec.body.mac
+    }
+    db.allinfo(value/*mac*/).then(t => {
       console.log(t)
       res.json(t);
     })
   });
 
-  app.get('/user', function (req, res) { // Выдача всех данных на начало
-    console.log('get user');
+  app.post('/user', function (req, res) { // Выдача всех данных на начало
+    const value = {
+      login: rec.body.login,
+      password: rec.body.password
+    }
     db.macuser(/*'dasha1925','1234'*/value).then(t => {
       console.log(t)
       res.json(t);
@@ -25,42 +30,61 @@ const app = express();
   });
 
   app.post('/tempinfo', function (req, res) { // Выдача данных о температуре
+    const value = {
+      mac: rec.body.mac,
+      hours: rec.body.hours,
+      datenow: Date.now()
+    }
     db.infotemp(value).then(t => {
       console.log(t)
       res.json(t);
     })
   });
   
-  app.get('/arduinoinfo', function (req, res) { // Запись данных с Arduino
+  app.post('/arduinoinfo', function (req, res) { // Запись данных с Arduino
     const values = {
-      mac:'hbhbb',
-      temp:26,
-      press:725,
-      hum:25,
-      gas:300,
-      date: new Date(2017,12,9,17,5,3)
+      mac: rec.body.mac,
+      temp: rec.body.temp,
+      press: rec.body.press,
+      hum: rec.body.hum,
+      gas: rec.body.gas,
+      date: Date.now()
     }
-
     db.addinfo(/*req.body.*/values)
       console.log('req',req.body);
       console.log('POST temp');
   });
 
-  app.get('/presinfo', function (req, res) { // Выдача данных о давлении
+  app.post('/presinfo', function (req, res) { // Выдача данных о давлении
+    const value = {
+      mac: rec.body.mac,
+      hours: rec.body.hours,
+      datenow: Date.now()
+    }
     db.infopress(value).then(t => {
       console.log(t)
       res.json(t);
     })
   });
 
-  app.get('/gasinfo', function (req, res) { // Выдача данных о состоянии газа
+  app.post('/gasinfo', function (req, res) { // Выдача данных о состоянии газа
+    const value = {
+      mac: rec.body.mac,
+      hours: rec.body.hours,
+      datenow: Date.now()
+    }
     db.infogass(value).then(t => {
       console.log(t)
       res.json(t);
     })
   });  
 
-  app.get('/huminfo', function (req, res) { // Выдача данных о влажности
+  app.post('/huminfo', function (req, res) { // Выдача данных о влажности
+    const value = {
+      mac: rec.body.mac,
+      hours: rec.body.hours,
+      datenow: Date.now()
+    }
     db.infohum(value).then(t => {
       console.log(t)
       res.json(t);
